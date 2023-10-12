@@ -21,12 +21,12 @@ import static guru.nidi.graphviz.model.Factory.mutNode;
 public class PavanGraph {
     public PavanGraph() {
 
-        graph = mutGraph("makeNewGraph").setDirected(true).graphAttrs().add(Color.RED);
+        //graph = mutGraph("makeNewGraph").setDirected(true).graphAttrs().add(Color.BLACK);
 
     }
 
 
-    public static MutableGraph graph;
+    public static MutableGraph graph = mutGraph("makeNewGraph").setDirected(true).graphAttrs().add(Color.BLACK);;
 
     public static void parseGraph(String filepath) throws IOException {
         graph = new Parser().read(new File(filepath));
@@ -36,9 +36,9 @@ public class PavanGraph {
         return graph.nodes().size();
     }
     public static String getNodeLabels() {
-        Collection<MutableNode> nodes = graph.nodes();
+        Collection<MutableNode> n = graph.nodes();
         String res = "";
-        for (MutableNode node : nodes) {
+        for (MutableNode node : n) {
             Label label = node.name();
             res = res.concat(" " + label);
         }
@@ -48,20 +48,20 @@ public class PavanGraph {
         return graph.edges().size();
     }
     public static String getEdgeDirections(MutableGraph graph) {
-        StringBuilder directions = new StringBuilder();
+        StringBuilder edge_directions = new StringBuilder();
         graph.edges().forEach(edge -> {
             String source = edge.from().name().toString();
             String target = edge.to().name().toString();
-            directions.append(source).append(" -> ").append(target).append("\n");
+            edge_directions.append(source).append(" -> ").append(target).append("\n");
         });
-        return directions.toString();
+        return edge_directions.toString();
     }
 
     public static String toString(MutableGraph graph) {
-        return "Number of nodes: " + getNumNodes(graph) + "\n" +
-                "Node labels: " + getNodeLabels() + "\n" +
-                "Number of edges: " + getNumEdges(graph) + "\n" +
-                "Edge directions:" + getEdgeDirections(graph);
+        return "Total number of nodes in the graph: " + getNumNodes(graph) + "\n" +
+                "Label of the Nodes: " + getNodeLabels() + "\n" +
+                "Total number of edges in the graph: " + getNumEdges(graph) + "\n" +
+                "Direction of the Edges:" + getEdgeDirections(graph);
     }
 
 
@@ -70,7 +70,7 @@ public class PavanGraph {
         Graphviz.fromGraph(graph).width(800).render(Format.PNG).toFile(outputImage);
         String res = toString(graph);
         System.out.println(res);
-        System.out.println("Graph created and saved as output.png");
+
     }
 
     public static boolean nodeExists(String label) {
@@ -79,6 +79,8 @@ public class PavanGraph {
     }
 
     public static void addNode(String label) {
+
+
         if(nodeExists(label)) {
             graph.add(mutNode(label));
             System.out.println("added node" + label);
@@ -86,31 +88,31 @@ public class PavanGraph {
     }
 
 
-    public void addNodes(String[] labels) {
+    public static void addNodes(String[] labels) {
         for (String label : labels) {
             addNode(label);
         }
     }
 
     public static MutableNode getNode(String label) {
-        Collection<MutableNode> nodes = graph.nodes();
-        for (MutableNode node : nodes) {
+        Collection<MutableNode> n = graph.nodes();
+        for (MutableNode node : n) {
             Label labl = node.name();
             if (labl.toString().equals(label)) {
                 return node;
             }
         }
-        // If the node with the given label is not found, return null or throw an exception as appropriate.
+
         return null;
     }
 
-    public void addEdge(String srcLabel, String dstLabel) {
-        MutableNode node1 = getNode(srcLabel);
-        MutableNode node2 = getNode(dstLabel);
-        node1.addLink(node2);
+    public static void addEdge(String src, String dst) {
+        MutableNode n1 = getNode(src);
+        MutableNode n2 = getNode(dst);
+        n1.addLink(n2);
     }
 
-    public void outputDOTGraph(String path) {
+    public static void outputDOTGraph(String path) {
         File dotFile = new File(path);
         try {
             Files.write(dotFile.toPath(), graph.toString().getBytes());
@@ -120,7 +122,7 @@ public class PavanGraph {
     }
 
 
-    public void outputGraphics(String path, String format) {
+    public static void outputGraphics(String path, String format) {
         Format graphFormat = Format.PNG;
         if ("png".equalsIgnoreCase(format)) {
             graphFormat = Format.PNG;
@@ -138,7 +140,7 @@ public class PavanGraph {
         PavanGraph graphObject = new PavanGraph();
         try {
             String filename = "test.dot";
-//            String output_filename = "output.png";
+
             String[] set_of_labels = new String[] {"12", "13", "14"};
             graphObject.parseGraph(filename);
 
@@ -154,7 +156,7 @@ public class PavanGraph {
             graphObject.addEdge("13", "10");
             graphObject.addEdge("14", "10");
 
-//            graphObject.outputGraph(output_filename);
+
             graphObject.outputDOTGraph("output.dot");
             graphObject.outputGraphics("output2.png", "png");
         } catch (IOException e) {

@@ -32,8 +32,8 @@ Prerequisites:
 - Build -> Build Project.
 
 ### Testing
-- Method Coverage in Testing = 50%
-- Line Coverage in Testing = 34%
+- Method Coverage in Testing = 90%
+- Line Coverage in Testing = 60%
 
 ### Outputs
 
