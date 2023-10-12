@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="CSE-464-2023-pkrish37" />
         <module name="softwaretest" />
       </profile>
     </annotationProcessing>
