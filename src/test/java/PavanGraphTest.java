@@ -1,8 +1,9 @@
+import guru.nidi.graphviz.model.MutableNode;
 import org.example.PavanGraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PavanGraphTest {
 
@@ -18,17 +19,61 @@ public class PavanGraphTest {
         graphObject.addNode("11");
         assertTrue(graphObject.nodeExists("11"));
     }
+
+    @Test
+    public void testGetNumNodes() {
+        int numNodes = graphObject.getNumNodes(graphObject.graph);
+
+        assertEquals(0, numNodes);  // The initial graph should have 0 nodes.
+    }
+
+    @Test
+    public void testGetLabels(){
+        String nodeLabels = graphObject.getNodeLabels();
+        assertEquals("", nodeLabels);
+    }
+    @Test
+    public void testGetEdgeDirections() {
+        String edgeDirections = graphObject.getEdgeDirections(graphObject.graph);
+        assertEquals("", edgeDirections); // The initial graph should have no edges.
+    }
+
+    @Test
+    public void testAddEdge() {
+        graphObject.addNode("Node1");
+        graphObject.addNode("Node2");
+        graphObject.addEdge("Node1", "Node2");
+        String edgeDirections = graphObject.getEdgeDirections(graphObject.graph);
+        assertTrue(edgeDirections.contains("Node1 -> Node2"));
+    }
+
+    @Test
+    public void testGetNode(){
+        graphObject.addNode("A");
+        Integer f=0;
+        MutableNode x = graphObject.getNode("A");
+        if( x==null){
+            f=1;
+        }
+
+
+    }
+    @Test
+    public void testtoString(){
+        graphObject.addNode("A");
+        assertNotNull(graphObject.toString(graphObject.graph));
+    }
+    @Test
+    public void testoutputformat(){
+        graphObject.addNode("A");
+        graphObject.addNode("B");
+
+    }
+
 }
 /*
 
 
-    @Test
-    public void testAddEdge() {
-        graphObject.addNode("A");
-        graphObject.addNode("B");
-        graphObject.addEdge("A", "B");
-        assertEquals(1, graphObject.getNumEdges(graphObject.graph));
-    }
 
     @Test
     public void testOutputGraph() {

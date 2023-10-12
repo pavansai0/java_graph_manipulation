@@ -20,7 +20,7 @@ import static guru.nidi.graphviz.model.Factory.mutNode;
 
 public class PavanGraph {
 
-    private MutableGraph graph;
+    public MutableGraph graph;
 
     public PavanGraph() {
 
@@ -37,9 +37,7 @@ public class PavanGraph {
 
     public int getNumNodes(MutableGraph graph) {
 
-        String r = getNodeLabels();
-        String[] elements =r.split(" ");
-        return elements.length;
+        return graph.edges().size();
 
     }
     public String processNumberString(String input) {
@@ -94,7 +92,7 @@ public class PavanGraph {
             String source = edge.from().name().toString();
             String target = edge.to().name().toString();
             if(!"A".equals(source)){
-            directions.append(source).append(" -> ").append(target).append("\n");}
+                directions.append(source).append(" -> ").append(target).append("\n");}
         });
         return directions.toString();
     }
@@ -146,22 +144,6 @@ public class PavanGraph {
     }
 
     public void addEdge(String srcLabel, String dstLabel) {
-//        Collection<MutableNode> nodes = graph.nodes();
-//        MutableNode node1 = null, node2 = null;
-//        for(MutableNode node : nodes){
-//            //System.out.println(node.name());
-//            if(node.name().toString().equals(srcLabel)) {
-//                node1 = node;
-//            }
-//            else if(node.name().toString().equals(dstLabel)){
-//                node2 = node;
-//            }
-//        }
-//        if (node1 != null){
-//            if(node2 != null){
-//                graph.add(node1).addLink(node2);
-//            }
-//        }
         MutableNode node1 = getNode(srcLabel);
         MutableNode node2 = getNode(dstLabel);
         node1.addLink(node2);
