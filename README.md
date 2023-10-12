@@ -6,8 +6,9 @@ A Java Program for manipulating graphs in DOT format
 - Prerequisites
 - Installation
 - Testing
+- -Outputs
 
-### Features:
+### Features
 
 - Feature 1:
   Reads the input dot file and Outputs the number of nodes and edges in the graph.
@@ -24,15 +25,26 @@ Prerequisites:
 - Graphviz
 
 
-### Installation:
+### Installation
 
 - git clone https://github.com/pavansai0/CSE-464-2023-pkrish37.git
 - Open the folder as new project in Intellij
 - Build -> Build Project.
 
-### Testing:
+### Testing
 - Method Coverage in Testing = 50%
 - Line Coverage in Testing = 34%
+
+### Outputs
+
+- Feature 1 Output:The input graph is printed
+![img_1.png](img_1.png)
+- Feature 2 Output: Adding Nodes 11,12,13,14 to the graph
+![img_2.png](img_2.png)
+- Feature 3 Output: Connecting the newly added nodes using addEdges function
+![img_3.png](img_3.png)
+
+ 
 
 
 

@@ -3,6 +3,8 @@ import org.example.PavanGraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PavanGraphTest {
@@ -64,9 +66,14 @@ public class PavanGraphTest {
         assertNotNull(graphObject.toString(graphObject.graph));
     }
     @Test
-    public void testoutputformat(){
+    public void testoutputformat() throws IOException {
         graphObject.addNode("A");
         graphObject.addNode("B");
+        String output_filename = "output.png";
+
+        graphObject.outputGraph(output_filename);
+        graphObject.outputDOTGraph("output.dot");
+        graphObject.outputGraphics("output2.png", "png");
 
     }
 

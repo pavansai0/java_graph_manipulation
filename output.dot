@@ -1,0 +1,36 @@
+digraph "A" {
+graph ["rankdir"="LR"]
+"0" ["shape"="circle","style"="filled"]
+"3" ["shape"="circle","style"="filled"]
+"5" ["shape"="circle","style"="filled"]
+"6" ["shape"="circle","style"="filled"]
+"7" ["shape"="circle","style"="filled"]
+"9" ["shape"="circle","style"="filled"]
+"10" ["shape"="doublecircle","style"="filled"]
+"8" ["shape"="circle","style"="filled"]
+"1" ["shape"="circle","style"="filled"]
+"2" ["shape"="circle","style"="filled"]
+"4" ["shape"="circle","style"="filled"]
+"0" -> "3" ["label"="g "]
+"0" -> "1" ["label"="b "]
+"0" -> "5" ["label"="u "]
+"3" -> "5" ["label"="i "]
+"5" -> "6" ["label"="r "]
+"5" -> "11"
+"6" -> "7" ["label"="l "]
+"6" -> "11"
+"7" -> "9" ["label"="x "]
+"7" -> "8" ["label"="y "]
+"7" -> "11"
+"9" -> "10" ["label"="p "]
+"9" -> "13"
+"9" -> "14"
+"13" -> "10"
+"14" -> "10"
+"8" -> "10" ["label"="z "]
+"11" -> "12"
+"1" -> "2" ["label"="o "]
+"2" -> "7" ["label"="y "]
+"2" -> "4" ["label"="o "]
+"4" -> "7" ["label"="k "]
+}

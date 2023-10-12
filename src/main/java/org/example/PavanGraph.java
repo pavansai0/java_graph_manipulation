@@ -19,9 +19,6 @@ import static guru.nidi.graphviz.model.Factory.mutGraph;
 import static guru.nidi.graphviz.model.Factory.mutNode;
 
 public class PavanGraph {
-
-    public MutableGraph graph;
-
     public PavanGraph() {
 
         graph = mutGraph("makeNewGraph").setDirected(true).graphAttrs().add(Color.RED);
@@ -29,75 +26,38 @@ public class PavanGraph {
     }
 
 
+    public static MutableGraph graph;
 
-
-    public void parseGraph(String filepath) throws IOException {
-        this.graph = new Parser().read(new File(filepath));
+    public static void parseGraph(String filepath) throws IOException {
+        graph = new Parser().read(new File(filepath));
     }
 
-    public int getNumNodes(MutableGraph graph) {
-
-        return graph.edges().size();
-
+    public static int getNumNodes(MutableGraph graph) {
+        return graph.nodes().size();
     }
-    public String processNumberString(String input) {
-        // Split the input string by spaces to get an array of number strings
-        String[] numberStrings = input.split(" ");
-
-        // Create a list to store the unique numbers
-        List<Integer> uniqueNumbers = new ArrayList<>();
-
-        for (String numberStr : numberStrings) {
-            try {
-                int number = Integer.parseInt(numberStr);
-                if (!uniqueNumbers.contains(number)) {
-                    uniqueNumbers.add(number);
-                }
-            } catch (NumberFormatException e) {
-                // Ignore non-integer values in the input
-            }
-        }
-
-        // Convert the unique numbers to a space-separated string
-        StringBuilder result = new StringBuilder();
-        for (int number : uniqueNumbers) {
-            result.append(number).append(" ");
-        }
-
-        // Remove the trailing space, if any
-        if (result.length() > 0) {
-            result.deleteCharAt(result.length() - 1);
-        }
-
-        return result.toString();
-    }
-    public String getNodeLabels() {
+    public static String getNodeLabels() {
         Collection<MutableNode> nodes = graph.nodes();
         String res = "";
         for (MutableNode node : nodes) {
             Label label = node.name();
             res = res.concat(" " + label);
         }
-        return processNumberString(res);
+        return res;
     }
-    public int getNumEdges(MutableGraph graph) {
-        String r = getEdgeDirections(graph);
-        String[] t = r.split("\n");
-
-        return t.length;
+    public static int getNumEdges(MutableGraph graph) {
+        return graph.edges().size();
     }
-    public String getEdgeDirections(MutableGraph graph) {
+    public static String getEdgeDirections(MutableGraph graph) {
         StringBuilder directions = new StringBuilder();
         graph.edges().forEach(edge -> {
             String source = edge.from().name().toString();
             String target = edge.to().name().toString();
-            if(!"A".equals(source)){
-                directions.append(source).append(" -> ").append(target).append("\n");}
+            directions.append(source).append(" -> ").append(target).append("\n");
         });
         return directions.toString();
     }
 
-    public String toString(MutableGraph graph) {
+    public static String toString(MutableGraph graph) {
         return "Number of nodes: " + getNumNodes(graph) + "\n" +
                 "Node labels: " + getNodeLabels() + "\n" +
                 "Number of edges: " + getNumEdges(graph) + "\n" +
@@ -105,7 +65,7 @@ public class PavanGraph {
     }
 
 
-    public void outputGraph(String filepath) throws IOException {
+    public static void outputGraph(String filepath) throws IOException {
         File outputImage = new File(filepath);
         Graphviz.fromGraph(graph).width(800).render(Format.PNG).toFile(outputImage);
         String res = toString(graph);
@@ -113,14 +73,15 @@ public class PavanGraph {
         System.out.println("Graph created and saved as output.png");
     }
 
-    public boolean nodeExists(String label) {
+    public static boolean nodeExists(String label) {
         String labels = getNodeLabels();
         return !labels.contains(label);
     }
 
-    public void addNode(String label) {
-        if(!nodeExists(label)) {
+    public static void addNode(String label) {
+        if(nodeExists(label)) {
             graph.add(mutNode(label));
+            System.out.println("added node" + label);
         }
     }
 
@@ -131,7 +92,7 @@ public class PavanGraph {
         }
     }
 
-    public MutableNode getNode(String label) {
+    public static MutableNode getNode(String label) {
         Collection<MutableNode> nodes = graph.nodes();
         for (MutableNode node : nodes) {
             Label labl = node.name();
@@ -164,7 +125,6 @@ public class PavanGraph {
         if ("png".equalsIgnoreCase(format)) {
             graphFormat = Format.PNG;
         }
-        // You can add more format options as needed.
 
         File outputFile = new File(path);
         try {
@@ -177,15 +137,26 @@ public class PavanGraph {
     public static void main(String[] args) {
         PavanGraph graphObject = new PavanGraph();
         try {
-            // Replace "test.dot" with the path to your .dot file
-            MutableGraph graph;
-            graph = new Parser().read(new File("D:\\edu\\software security\\softwaretest\\test.dot"));
+            String filename = "test.dot";
+//            String output_filename = "output.png";
+            String[] set_of_labels = new String[] {"12", "13", "14"};
+            graphObject.parseGraph(filename);
 
-            // Output the graph in a specific format (e.g., PNG)
-            File outputImage = new File("output.png");
-            Graphviz.fromGraph(graph).width(800).render(Format.PNG).toFile(outputImage);
+            graphObject.addNode("11");
+            graphObject.addNodes(set_of_labels);
 
-            System.out.println("Graph created and saved as output.png");
+            graphObject.addEdge("6", "11");
+            graphObject.addEdge("5", "11");
+            graphObject.addEdge("11", "12");
+            graphObject.addEdge("7", "11");
+            graphObject.addEdge("9", "13");
+            graphObject.addEdge("9", "14");
+            graphObject.addEdge("13", "10");
+            graphObject.addEdge("14", "10");
+
+//            graphObject.outputGraph(output_filename);
+            graphObject.outputDOTGraph("output.dot");
+            graphObject.outputGraphics("output2.png", "png");
         } catch (IOException e) {
             e.printStackTrace();
         }
