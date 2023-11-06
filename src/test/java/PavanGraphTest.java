@@ -201,7 +201,7 @@ public class PavanGraphTest {
         PavanGraph.Path p = new PavanGraph.Path(n);
         ArrayList<Integer> curpath = new ArrayList<>();
         ArrayList<Integer> expected = new ArrayList<>(Arrays.asList(0, 3, 5, 6));
-        p.GraphSearch("0","6",curpath);
+        p.GraphSearchDFS("0","6",curpath);
         assertEquals(curpath, expected);
     }
 
@@ -212,7 +212,7 @@ public class PavanGraphTest {
         PavanGraph.Path p = new PavanGraph.Path(n);
         ArrayList<Integer> curpath = new ArrayList<>();
         ArrayList<Integer> expected = new ArrayList<>(Arrays.asList(0, 4, 5, 6));
-        p.GraphSearch("1","3",curpath);
+        p.GraphSearchDFS("1","3",curpath);
         assertFalse(p.exist); // Path should be empty
     }
 
@@ -227,7 +227,7 @@ public class PavanGraphTest {
 
 
         ArrayList<Integer> currentpath = new ArrayList<>();
-        boolean result = p.GraphSearch("0", "0", currentpath);
+        boolean result = p.GraphSearchDFS("0", "0", currentpath);
         assertTrue(result);
         assertTrue(p.exist);
         System.out.println(p.path);

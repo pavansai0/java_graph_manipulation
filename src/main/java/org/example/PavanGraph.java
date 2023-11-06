@@ -1,5 +1,6 @@
 package org.example;
 
+import com.kitfox.svg.A;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.engine.Format;
@@ -205,6 +206,8 @@ public class PavanGraph {
     public static class Path{
 
         public static boolean exist;
+
+
         public static boolean[] visiteddfs;
         public static ArrayList<Integer> path;
 
@@ -214,9 +217,17 @@ public class PavanGraph {
 
         }
 
+        public static void GraphSearch(String src,String dst)
+        {
+            ArrayList<Integer> currentpath = new ArrayList<>();
+
+            GraphSearchDFS(src,dst,currentpath);
+
+        }
 
 
-        public static boolean GraphSearch(String src,String dst,ArrayList<Integer> currentpath)
+
+        public static boolean GraphSearchDFS(String src,String dst,ArrayList<Integer> currentpath)
         {
             visiteddfs[Integer.parseInt(src)] = true;
 
@@ -239,7 +250,7 @@ public class PavanGraph {
                 LinkTarget t = l.to();
                 String lb= t.name().toString();
                 currentpath.add(Integer.parseInt(lb));
-                if(!visiteddfs[Integer.parseInt(lb)] && GraphSearch(lb,dst,currentpath))
+                if(!visiteddfs[Integer.parseInt(lb)] && GraphSearchDFS(lb,dst,currentpath))
                 {
                     path = currentpath;
                     exist = true;
@@ -281,7 +292,7 @@ public class PavanGraph {
 
             ArrayList<Integer> currentpath = new ArrayList<>();
 
-            p.GraphSearch("0","6",currentpath);
+            p.GraphSearchDFS("0","6",currentpath);
 
             System.out.println(p.path);
 
