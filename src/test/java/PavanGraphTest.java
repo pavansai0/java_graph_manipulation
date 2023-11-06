@@ -1,9 +1,10 @@
 import guru.nidi.graphviz.attribute.Color;
 import org.example.PavanGraph;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 
 import static guru.nidi.graphviz.model.Factory.mutGraph;
@@ -76,6 +77,120 @@ public class PavanGraphTest {
 
 
     }
+
+    @Test
+    public void testRemoveNode() throws IOException {
+        PavanGraph.parseGraph("test.dot");
+        PavanGraph.removeNode("2", "test.dot");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("test.dot"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                assertFalse(line.contains("\"" + "2" + "\""));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    public void testRemoveNodes() throws IOException {
+        PavanGraph.parseGraph("test.dot");
+        String[] test_labels = new String[] {"2", "3"};
+        PavanGraph.removeNodes(test_labels, "test.dot");
+
+        // Verify that all labels in the list are removed
+        try (BufferedReader reader = new BufferedReader(new FileReader("test.dot"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                for (String label : test_labels) {
+                    assertFalse(line.contains("\"" + label + "\""));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //testing removal of nodes that don't exist in graph
+    @Test
+    public void testRemoveNodesThatDontExist() throws IOException {
+        PavanGraph.parseGraph("test.dot");
+        String[] test_labels = new String[] {"2"};
+        PavanGraph.removeNodes(test_labels, "test.dot");
+
+        // Verify that all labels in the list are removed
+        try (BufferedReader reader = new BufferedReader(new FileReader("test.dot"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                for (String label : test_labels) {
+                    assertFalse(line.contains("\"" + label + "\""));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //testing removal of duplicate nodes in the form of same label names within the string
+    @Test
+    public void testRemoveDuplicateNodes() throws IOException {
+        PavanGraph.parseGraph("test.dot");
+        String[] test_labels = new String[] {"2", "2"};
+        PavanGraph.removeNodes(test_labels, "test.dot");
+
+        // Verify that all labels in the list are removed
+        try (BufferedReader reader = new BufferedReader(new FileReader("test.dot"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                for (String label : test_labels) {
+                    assertFalse(line.contains("\"" + label + "\""));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    public void testRemoveEdge() throws IOException {
+        String src = "3";
+        String dst = "5";
+        PavanGraph.parseGraph("test.dot");
+        PavanGraph.removeEdge(src, dst, "test.dot");
+
+        // Verify that the specified edge is removed
+        try (BufferedReader reader = new BufferedReader(new FileReader("test.dot"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                assertFalse(line.contains("\"" + src + "\"") && line.contains("\"" + dst + "\""));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //tests for non-existent edge removal
+    @Test
+    public void testRemoveNoneExistentEdge() throws IOException {
+        String src = "1";
+        String dst = "3";
+        PavanGraph.parseGraph("test.dot");
+        PavanGraph.removeEdge(src, dst, "test.dot");
+
+        // Verify that the specified edge is removed
+        try (BufferedReader reader = new BufferedReader(new FileReader("test.dot"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                assertFalse(line.contains("\"" + src + "\"") && line.contains("\"" + dst + "\""));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+       }
+
 
 }
 

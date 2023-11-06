@@ -5,13 +5,11 @@ import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 
-import guru.nidi.graphviz.model.MutableGraph;
-import guru.nidi.graphviz.model.MutableNode;
+import guru.nidi.graphviz.model.*;
 import guru.nidi.graphviz.parse.Parser;
 
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
 
@@ -26,7 +24,7 @@ public class PavanGraph {
     }
 
 
-    public static MutableGraph graph = mutGraph("makeNewGraph").setDirected(true).graphAttrs().add(Color.BLACK);;
+    public static MutableGraph graph = mutGraph("makeNewGraph").setDirected(true).graphAttrs().add(Color.BLACK);
 
     public static void parseGraph(String filepath) throws IOException {
         graph = new Parser().read(new File(filepath));
@@ -88,6 +86,7 @@ public class PavanGraph {
     }
 
 
+
     public static void addNodes(String[] labels) {
         for (String label : labels) {
             addNode(label);
@@ -111,6 +110,8 @@ public class PavanGraph {
         MutableNode n2 = getNode(dst);
         n1.addLink(n2);
     }
+
+
 
     public static void outputDOTGraph(String path) {
         File dotFile = new File(path);
@@ -136,28 +137,110 @@ public class PavanGraph {
         }
     }
 
+    public static void removeNode(String label,String filepath)
+    {
+        File file = new File(filepath);
+        String quotedLabel = "\"" + label + "\"";
+        File tempFile = new File("tempFile.dot"); // Temporary file to store modified content
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if(!line.contains(quotedLabel))
+                {
+                    writer.write(line + System.lineSeparator());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Rename the temporary file to the original filename
+        if (file.delete()) {
+            tempFile.renameTo(file);
+        }
+
+    }
+
+    public static void removeNodes(String[] labels,String filename)
+    {
+        for (String label : labels) {
+            removeNode(label,filename);
+        }
+
+    }
+
+    public static void removeEdge(String src, String dst,String filename)
+    {
+        File file = new File(filename);
+        String quotedsrc = "\"" + src + "\"";
+        String quoteddst = "\"" + dst + "\"";
+        File tempFile = new File("tempFile.dot"); // Temporary file to store modified content
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if(!(line.contains(quotedsrc) && line.contains(quoteddst)))
+                {
+                    writer.write(line + System.lineSeparator());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Rename the temporary file to the original filename
+        if (file.delete()) {
+            tempFile.renameTo(file);
+        }
+    }
+
+
+
     public static void main(String[] args) {
         PavanGraph graphObject = new PavanGraph();
         try {
             String filename = "test.dot";
 
-            String[] set_of_labels = new String[] {"12", "13", "14"};
+            String[] set_of_labels = new String[] {"2", "3"};
             graphObject.parseGraph(filename);
+//
+//            graphObject.addNode("11");
+//            graphObject.addNodes(set_of_labels);
+//
+//            graphObject.addEdge("6", "11");
+//            graphObject.addEdge("5", "11");
+//            graphObject.addEdge("11", "12");
+//            graphObject.addEdge("7", "11");
+//            graphObject.addEdge("9", "13");
+//            graphObject.addEdge("9", "14");
+//            graphObject.addEdge("13", "10");
+//            graphObject.addEdge("14", "10");
 
-            graphObject.addNode("11");
-            graphObject.addNodes(set_of_labels);
-
-            graphObject.addEdge("6", "11");
-            graphObject.addEdge("5", "11");
-            graphObject.addEdge("11", "12");
-            graphObject.addEdge("7", "11");
-            graphObject.addEdge("9", "13");
-            graphObject.addEdge("9", "14");
-            graphObject.addEdge("13", "10");
-            graphObject.addEdge("14", "10");
+            graphObject.removeNodes(set_of_labels,"output.dot");
 
 
-            graphObject.outputDOTGraph("output.dot");
+
+
+//            graphObject.outputDOTGraph("output.dot");
+//            graphObject.outputGraphics("output2.png", "png");
+
+//            int n = graphObject.graph.nodes().size();
+//            boolean[] visited = new boolean[n];
+//            String[] adj = new String[n];
+//
+//            for (int i = 0; i < visited.length; i++) {
+//                visited[i] = false;
+//            }
+//            Queue<String> q = new ArrayDeque<>();
+//
+//            System.out.println(haspath_bfs("8","9",visited,q));
+
+            graphObject.parseGraph("output.dot");
             graphObject.outputGraphics("output2.png", "png");
         } catch (IOException e) {
             e.printStackTrace();
