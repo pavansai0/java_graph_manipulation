@@ -16,6 +16,9 @@ import java.util.*;
 import static guru.nidi.graphviz.model.Factory.mutGraph;
 import static guru.nidi.graphviz.model.Factory.mutNode;
 
+
+
+
 public class PavanGraph {
     public PavanGraph() {
 
@@ -199,7 +202,55 @@ public class PavanGraph {
         }
     }
 
+    public static class Path{
 
+        public static boolean exist;
+        public static boolean[] visiteddfs;
+        public static ArrayList<Integer> path;
+
+        public Path(int n) {
+            visiteddfs = new boolean[n];
+            path = new ArrayList<>();
+
+        }
+
+
+
+        public static boolean GraphSearch(String src,String dst,ArrayList<Integer> currentpath)
+        {
+            visiteddfs[Integer.parseInt(src)] = true;
+
+            if(currentpath.size()==0)
+            {
+                currentpath.add(Integer.parseInt(src));
+            }
+
+
+
+            if(Integer.parseInt(src) == Integer.parseInt(dst))
+            {
+                exist = true;
+                return true;
+            }
+            MutableNode n1 = getNode(src);
+            List<Link> x = n1.links();
+            for(Link l:x)
+            {
+                LinkTarget t = l.to();
+                String lb= t.name().toString();
+                currentpath.add(Integer.parseInt(lb));
+                if(!visiteddfs[Integer.parseInt(lb)] && GraphSearch(lb,dst,currentpath))
+                {
+                    path = currentpath;
+                    exist = true;
+                    return true;
+                }
+                currentpath.remove(currentpath.size()-1);
+            }
+            exist = false;
+            return false;
+        }
+    }
 
     public static void main(String[] args) {
         PavanGraph graphObject = new PavanGraph();
@@ -221,24 +272,18 @@ public class PavanGraph {
 //            graphObject.addEdge("13", "10");
 //            graphObject.addEdge("14", "10");
 
-            graphObject.removeNodes(set_of_labels,"output.dot");
-
-
-
 
 //            graphObject.outputDOTGraph("output.dot");
 //            graphObject.outputGraphics("output2.png", "png");
 
-//            int n = graphObject.graph.nodes().size();
-//            boolean[] visited = new boolean[n];
-//            String[] adj = new String[n];
-//
-//            for (int i = 0; i < visited.length; i++) {
-//                visited[i] = false;
-//            }
-//            Queue<String> q = new ArrayDeque<>();
-//
-//            System.out.println(haspath_bfs("8","9",visited,q));
+            int n = graphObject.graph.nodes().size();
+            Path p = new Path(n);
+
+            ArrayList<Integer> currentpath = new ArrayList<>();
+
+            p.GraphSearch("0","6",currentpath);
+
+            System.out.println(p.path);
 
             graphObject.parseGraph("output.dot");
             graphObject.outputGraphics("output2.png", "png");

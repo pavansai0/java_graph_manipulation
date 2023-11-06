@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static guru.nidi.graphviz.model.Factory.mutGraph;
 import static org.junit.jupiter.api.Assertions.*;
@@ -189,7 +191,48 @@ public class PavanGraphTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-       }
+    }
+
+    @Test
+    public void testHasPathDFS_PathExists() throws IOException {
+
+        PavanGraph.parseGraph("test.dot");
+        int n = PavanGraph.graph.nodes().size();
+        PavanGraph.Path p = new PavanGraph.Path(n);
+        ArrayList<Integer> curpath = new ArrayList<>();
+        ArrayList<Integer> expected = new ArrayList<>(Arrays.asList(0, 3, 5, 6));
+        p.GraphSearch("0","6",curpath);
+        assertEquals(curpath, expected);
+    }
+
+    @Test
+    public void testHasPathDFS_PathDoesNotExist() throws IOException {
+        PavanGraph.parseGraph("test.dot");
+        int n = PavanGraph.graph.nodes().size();
+        PavanGraph.Path p = new PavanGraph.Path(n);
+        ArrayList<Integer> curpath = new ArrayList<>();
+        ArrayList<Integer> expected = new ArrayList<>(Arrays.asList(0, 4, 5, 6));
+        p.GraphSearch("1","3",curpath);
+        assertFalse(p.exist); // Path should be empty
+    }
+
+
+    @Test
+    public void testHasPathDFS_SameSourceAndDestination() throws IOException {
+
+        PavanGraph.parseGraph("test.dot");
+        int n = PavanGraph.graph.nodes().size();
+        PavanGraph.Path p = new PavanGraph.Path(n);
+        ArrayList<Integer> curpath = new ArrayList<>();
+
+
+        ArrayList<Integer> currentpath = new ArrayList<>();
+        boolean result = p.GraphSearch("0", "0", currentpath);
+        assertTrue(result);
+        assertTrue(p.exist);
+        System.out.println(p.path);
+        assertEquals(0, p.path.size()); //path length is 0 in this case
+    }
 
 
 }
