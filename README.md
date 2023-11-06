@@ -16,6 +16,10 @@ A Java program to remove ndoe , remove nodes and remove edges
 removes multiple nodes
 - Feature 3:
 removes eddges
+- Feature 4:
+Find a possible path if exists between source and destination using DFS Algorithm.
+- Feature 5:
+Find a possible path if exists between source and destination using BFS Algorithm
 
 
 Prerequisites:
@@ -31,23 +35,48 @@ Prerequisites:
 - Build -> Build Project.
 
 ### Testing
-- Method Coverage in Testing = 90%
-- Line Coverage in Testing = 60%
+- Method Coverage in Testing = 92%
+- Line Coverage in Testing = 84%
+- ![coverage.png](coverage.png)
 
-### Outputs
+### Sample Inputs and Outputs:
 
-- Feature 1 Output:The input graph is printed
+ RemoveNode Input 
+![removeNode_input.png](removeNode_input.png)
 
-![image](https://github.com/pavansai0/CSE-464-2023-pkrish37/assets/48530179/d0bb9296-6771-4de0-b50e-62451d57643b)
+ Initial Graph
+ ![initial_graph.png](intial_graph.png)
 
-- Feature 2 Output: Adding Nodes 11,12,13,14 to the graph
-![image](https://github.com/pavansai0/CSE-464-2023-pkrish37/assets/48530179/b32ca8f9-0a15-4eb3-9e5a-02ace7c19b1e)
+ Graph after remvoveNode
+ ![removeNode_output.png](removeNode_graph.png)
 
-- Feature 3 Output: Connecting the newly added nodes using addEdges function
-![image](https://github.com/pavansai0/CSE-464-2023-pkrish37/assets/48530179/3bc9120b-3752-4e86-9efb-f9c91500eed0)
+ RemoveNodes Input
+ ![removeNodes_input.png](removeNodes_input.png)
 
+ Initial Graph
+ ![initial_graph.png](intial_graph.png)
 
- 
+ Graph after remvoveNodes
+ ![removeNodes_output.png](removeNodes.png)
 
+ RemoveEdge Input
+ ![removeEdge_input.png](removeEdge_input.png)
 
+ Initial Graph
+ ![initial_graph.png](intial_graph.png)
+
+ Graph after remvoveNodes
+ ![removeEdge_output.png](removeEdge_output.png)
+
+ GraphSearch BFS input
+ ![input_bfs.png](input_bfs.png)
+
+  GraphSearch BFS output
+ ![input_bfs.png](bfs_out.png)
+
+ GraphSearch DFS input
+ ![dfs_input.png](dfs_input.png)
+
+  GraphSearch DFS output
+ ![dfs_output.png](dfs_out.png)
 
