@@ -191,6 +191,37 @@ public class PavanGraphTest {
         }
        }
 
+    @Test
+    public void testGraphSearch_PathExists() throws IOException {
+        PavanGraph.parseGraph("test.dot");
+        int n = PavanGraph.graph.nodes().size();
+        PavanGraph.Path p = new PavanGraph.Path(n);
+
+        p.GraphSearch("0", "6");
+        System.out.println(p.path.size());
+        assertEquals(3, p.path.size());
+    }
+
+    @Test
+    public void testGraphSearch_PathDoesNotExist() throws IOException {
+        PavanGraph.parseGraph("test.dot");
+        int n = PavanGraph.graph.nodes().size();
+        PavanGraph.Path p = new PavanGraph.Path(n);
+        p.GraphSearch("2", "5");
+        assertEquals(0, p.path.size());
+    }
+
+
+
+    @Test
+    public void testGraphSearch_SameSourceAndDestination() throws IOException {
+        PavanGraph.parseGraph("test.dot");
+        int n = PavanGraph.graph.nodes().size();
+        PavanGraph.Path p = new PavanGraph.Path(n);
+        p.GraphSearch("0", "0");
+        assertEquals(1, p.path.size());
+    }
+
 
 }
 

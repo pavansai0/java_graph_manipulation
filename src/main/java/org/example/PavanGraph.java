@@ -217,10 +217,10 @@ public class PavanGraph {
             boolean[] visited = new boolean[1000];
 
 
-            haspath_bfs(src,dst,visited,temp);
+            GraphSearchBFS(src,dst,visited,temp);
         }
 
-        public static void haspath_bfs(String src,String dst,boolean[] visited,ArrayList<Integer> currentpath )
+        public static void GraphSearchBFS(String src,String dst,boolean[] visited,ArrayList<Integer> currentpath )
         {
             if(Integer.parseInt(src) ==Integer.parseInt(dst)){
                 exist = true;
@@ -236,7 +236,7 @@ public class PavanGraph {
                 String lb= t.name().toString();
                 if(!visited[Integer.parseInt(lb)]){
                     currentpath.add(Integer.parseInt(lb));
-                    haspath_bfs(lb,dst,visited,currentpath);
+                    GraphSearchBFS(lb,dst,visited,currentpath);
                     currentpath.remove(currentpath.size()-1);
                 }
             }
