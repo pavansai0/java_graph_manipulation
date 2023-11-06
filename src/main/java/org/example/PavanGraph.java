@@ -1,5 +1,6 @@
 package org.example;
 
+import com.kitfox.svg.A;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.engine.Format;
@@ -204,20 +205,35 @@ public class PavanGraph {
         public static boolean[] visiteddfs;
         public static ArrayList<Integer> path;
 
+        public enum Level {
+            DFS,
+            BFS
+        }
+
+
         public Path(int n) {
             visiteddfs = new boolean[n];
             path = new ArrayList<>();
 
         }
 
-        public static void GraphSearch(String src,String dst)
+        public static void GraphSearch(String src,String dst,Level x)
         {
-            ArrayList<Integer> temp = new ArrayList<>();
-            temp.add(Integer.parseInt(src));
-            boolean[] visited = new boolean[1000];
+            if(x==Level.BFS)
+            {
+                ArrayList<Integer> temp = new ArrayList<>();
+                temp.add(Integer.parseInt(src));
+                boolean[] visited = new boolean[1000];
 
 
-            GraphSearchBFS(src,dst,visited,temp);
+                GraphSearchBFS(src,dst,visited,temp);
+            } else if (x==Level.DFS) {
+                ArrayList<Integer> temp = new ArrayList<>();
+                temp.add(Integer.parseInt(src));
+                GraphSearchDFS(src,dst,temp);
+
+            }
+
         }
 
         public static void GraphSearchBFS(String src,String dst,boolean[] visited,ArrayList<Integer> currentpath )
@@ -244,7 +260,43 @@ public class PavanGraph {
             visited[Integer.parseInt(src)] =false;
         }
 
+        public static boolean GraphSearchDFS(String src,String dst,ArrayList<Integer> currentpath)
+        {
+            visiteddfs[Integer.parseInt(src)] = true;
+
+            if(currentpath.size()==0)
+            {
+                currentpath.add(Integer.parseInt(src));
+            }
+
+
+
+            if(Integer.parseInt(src) == Integer.parseInt(dst))
+            {
+                exist = true;
+                return true;
+            }
+            MutableNode n1 = getNode(src);
+            List<Link> x = n1.links();
+            for(Link l:x)
+            {
+                LinkTarget t = l.to();
+                String lb= t.name().toString();
+                currentpath.add(Integer.parseInt(lb));
+                if(!visiteddfs[Integer.parseInt(lb)] && GraphSearchDFS(lb,dst,currentpath))
+                {
+                    path = currentpath;
+                    exist = true;
+                    return true;
+                }
+                currentpath.remove(currentpath.size()-1);
+            }
+            exist = false;
+            return false;
         }
+    }
+
+
 
 
 
@@ -273,14 +325,21 @@ public class PavanGraph {
 
 
 
-//            graphObject.outputDOTGraph("output.dot");
-//            graphObject.outputGraphics("output2.png", "png");
+            graphObject.outputDOTGraph("output.dot");
+            graphObject.outputGraphics("output2.png", "png");
 
-                int n = graphObject.graph.nodes().size();
-                Path p = new Path(n);
-                p.GraphSearch("0","6");
+            int n = graphObject.graph.nodes().size();
+            boolean[] visited = new boolean[n];
+            String[] adj = new String[n];
 
-                System.out.println(p.path);
+            for (int i = 0; i < visited.length; i++) {
+                visited[i] = false;
+            }
+            Queue<String> q = new ArrayDeque<>();
+            Path p = new Path(n);
+//
+            p.GraphSearch("8","9", Path.Level.BFS);
+
             graphObject.parseGraph("output.dot");
             graphObject.outputGraphics("output2.png", "png");
         } catch (IOException e) {
