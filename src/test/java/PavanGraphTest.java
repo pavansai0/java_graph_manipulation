@@ -199,10 +199,9 @@ public class PavanGraphTest {
         PavanGraph.parseGraph("test.dot");
         int n = PavanGraph.graph.nodes().size();
         PavanGraph.Path p = new PavanGraph.Path(n);
-        ArrayList<Integer> curpath = new ArrayList<>();
         ArrayList<Integer> expected = new ArrayList<>(Arrays.asList(0, 3, 5, 6));
-        p.GraphSearchDFS("0","6",curpath);
-        assertEquals(curpath, expected);
+        p.GraphSearch("0","6");
+        assertEquals(p.path, expected);
     }
 
     @Test
@@ -210,9 +209,9 @@ public class PavanGraphTest {
         PavanGraph.parseGraph("test.dot");
         int n = PavanGraph.graph.nodes().size();
         PavanGraph.Path p = new PavanGraph.Path(n);
-        ArrayList<Integer> curpath = new ArrayList<>();
+
         ArrayList<Integer> expected = new ArrayList<>(Arrays.asList(0, 4, 5, 6));
-        p.GraphSearchDFS("1","3",curpath);
+        p.GraphSearch("1","3");
         assertFalse(p.exist); // Path should be empty
     }
 
@@ -223,12 +222,8 @@ public class PavanGraphTest {
         PavanGraph.parseGraph("test.dot");
         int n = PavanGraph.graph.nodes().size();
         PavanGraph.Path p = new PavanGraph.Path(n);
-        ArrayList<Integer> curpath = new ArrayList<>();
+        p.GraphSearch("0", "0");
 
-
-        ArrayList<Integer> currentpath = new ArrayList<>();
-        boolean result = p.GraphSearchDFS("0", "0", currentpath);
-        assertTrue(result);
         assertTrue(p.exist);
         System.out.println(p.path);
         assertEquals(0, p.path.size()); //path length is 0 in this case
