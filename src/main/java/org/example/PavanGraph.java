@@ -198,6 +198,53 @@ public class PavanGraph {
             tempFile.renameTo(file);
         }
     }
+    public static class Path{
+
+        public static boolean exist;
+        public static boolean[] visiteddfs;
+        public static ArrayList<Integer> path;
+
+        public Path(int n) {
+            visiteddfs = new boolean[n];
+            path = new ArrayList<>();
+
+        }
+
+        public static void GraphSearch(String src,String dst)
+        {
+            ArrayList<Integer> temp = new ArrayList<>();
+            temp.add(Integer.parseInt(src));
+            boolean[] visited = new boolean[1000];
+
+
+            GraphSearchBFS(src,dst,visited,temp);
+        }
+
+        public static void GraphSearchBFS(String src,String dst,boolean[] visited,ArrayList<Integer> currentpath )
+        {
+            if(Integer.parseInt(src) ==Integer.parseInt(dst)){
+                exist = true;
+                path = new ArrayList<>();
+                path.addAll(currentpath);
+            }
+            visited[Integer.parseInt(src)] =true;
+            MutableNode n1 = getNode(src);
+            List<Link> x = n1.links();
+            for(Link l:x)
+            {
+                LinkTarget t = l.to();
+                String lb= t.name().toString();
+                if(!visited[Integer.parseInt(lb)]){
+                    currentpath.add(Integer.parseInt(lb));
+                    GraphSearchBFS(lb,dst,visited,currentpath);
+                    currentpath.remove(currentpath.size()-1);
+                }
+            }
+            exist = false;
+            visited[Integer.parseInt(src)] =false;
+        }
+
+        }
 
 
 
@@ -229,17 +276,11 @@ public class PavanGraph {
 //            graphObject.outputDOTGraph("output.dot");
 //            graphObject.outputGraphics("output2.png", "png");
 
-//            int n = graphObject.graph.nodes().size();
-//            boolean[] visited = new boolean[n];
-//            String[] adj = new String[n];
-//
-//            for (int i = 0; i < visited.length; i++) {
-//                visited[i] = false;
-//            }
-//            Queue<String> q = new ArrayDeque<>();
-//
-//            System.out.println(haspath_bfs("8","9",visited,q));
+                int n = graphObject.graph.nodes().size();
+                Path p = new Path(n);
+                p.GraphSearch("0","6");
 
+                System.out.println(p.path);
             graphObject.parseGraph("output.dot");
             graphObject.outputGraphics("output2.png", "png");
         } catch (IOException e) {
