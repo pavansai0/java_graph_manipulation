@@ -1,5 +1,5 @@
 # CSE 464 Project
-A Java Program for manipulating graphs in DOT format
+A Java program to remove ndoe , remove nodes and remove edges
 
 ### Table of Contents
 - Features
@@ -11,13 +11,12 @@ A Java Program for manipulating graphs in DOT format
 ### Features
 
 - Feature 1:
-  Reads the input dot file and Outputs the number of nodes and edges in the graph.
+  removes node
 - Feature 2:
-Implements the add Node function while making sure there are no duplicates
+removes multiple nodes
 - Feature 3:
-Implements add Edge function which adds an edge between source node and destination node while making sure there are no duplicate edges.
-- Feature 4:
-Outputs the resultant graph in the required format.
+removes eddges
+
 
 Prerequisites:
 - Java 8 or higher
@@ -38,11 +37,15 @@ Prerequisites:
 ### Outputs
 
 - Feature 1 Output:The input graph is printed
-![img_1.png](img_1.png)
+
+![image](https://github.com/pavansai0/CSE-464-2023-pkrish37/assets/48530179/d0bb9296-6771-4de0-b50e-62451d57643b)
+
 - Feature 2 Output: Adding Nodes 11,12,13,14 to the graph
-![img_2.png](img_2.png)
+![image](https://github.com/pavansai0/CSE-464-2023-pkrish37/assets/48530179/b32ca8f9-0a15-4eb3-9e5a-02ace7c19b1e)
+
 - Feature 3 Output: Connecting the newly added nodes using addEdges function
-![img_3.png](img_3.png)
+![image](https://github.com/pavansai0/CSE-464-2023-pkrish37/assets/48530179/3bc9120b-3752-4e86-9efb-f9c91500eed0)
+
 
  
 
