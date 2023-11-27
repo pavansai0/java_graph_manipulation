@@ -146,7 +146,7 @@ public class PavanGraph {
             e.printStackTrace();
         }
     }
-
+//
     public static void removeNode(String label,String filepath)
     {
         File file = new File(filepath);
