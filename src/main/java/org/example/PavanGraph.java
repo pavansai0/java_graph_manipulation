@@ -98,7 +98,11 @@ public class PavanGraph {
         Collection<MutableNode> n = graph.nodes();
         for (MutableNode node : n) {
             Label labl = node.name();
-            if (labl.toString().equals(label)) {
+
+            //refactor 1 using extract variable
+            boolean temp = labl.toString().equals(label);
+            //end of refactor 1
+            if (temp) {
                 return node;
             }
         }
@@ -123,6 +127,11 @@ public class PavanGraph {
         }
     }
 
+    //refactor 2 using Extract method
+    public static void outputgraphicshelper(Format gf , File outputFile) throws IOException {
+        Graphviz.fromGraph(graph).width(800).render(gf).toFile(outputFile);
+    }
+
 
     public static void outputGraphics(String path, String format) {
         Format graphFormat = Format.PNG;
@@ -132,7 +141,7 @@ public class PavanGraph {
 
         File outputFile = new File(path);
         try {
-            Graphviz.fromGraph(graph).width(800).render(graphFormat).toFile(outputFile);
+            outputgraphicshelper(graphFormat,outputFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -173,11 +182,18 @@ public class PavanGraph {
 
     }
 
+    //refactoring 3 using Extract Method
+    public static String AddQuotes(String input)
+    {
+        String output = "\"" + input + "\"";
+        return output;
+    }
+
     public static void removeEdge(String src, String dst,String filename)
     {
         File file = new File(filename);
-        String quotedsrc = "\"" + src + "\"";
-        String quoteddst = "\"" + dst + "\"";
+        String quotedsrc = AddQuotes(src);
+        String quoteddst = AddQuotes(dst);
         File tempFile = new File("tempFile.dot"); // Temporary file to store modified content
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -185,7 +201,10 @@ public class PavanGraph {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                if(!(line.contains(quotedsrc) && line.contains(quoteddst)))
+                //refactor 4 using Extract variable
+                boolean checkvalid = !(line.contains(quotedsrc) && line.contains(quoteddst));
+
+                if(checkvalid)
                 {
                     writer.write(line + System.lineSeparator());
                 }
@@ -283,7 +302,9 @@ public class PavanGraph {
                 LinkTarget t = l.to();
                 String lb= t.name().toString();
                 currentpath.add(Integer.parseInt(lb));
-                if(!visiteddfs[Integer.parseInt(lb)] && GraphSearchDFS(lb,dst,currentpath))
+                //refactor 5 using Extract variable
+                boolean check = !visiteddfs[Integer.parseInt(lb)] && GraphSearchDFS(lb,dst,currentpath);
+                if(check)
                 {
                     path = currentpath;
                     exist = true;
@@ -320,7 +341,7 @@ public class PavanGraph {
 //            graphObject.addEdge("13", "10");
 //            graphObject.addEdge("14", "10");
 
-            graphObject.removeNodes(set_of_labels,"output.dot");
+
 
 
 
@@ -329,19 +350,13 @@ public class PavanGraph {
             graphObject.outputGraphics("output2.png", "png");
 
             int n = graphObject.graph.nodes().size();
-            boolean[] visited = new boolean[n];
-            String[] adj = new String[n];
-
-            for (int i = 0; i < visited.length; i++) {
-                visited[i] = false;
-            }
-            Queue<String> q = new ArrayDeque<>();
             Path p = new Path(n);
-//
-            p.GraphSearch("8","9", Path.Level.BFS);
 
-            graphObject.parseGraph("output.dot");
-            graphObject.outputGraphics("output2.png", "png");
+            p.GraphSearch("0","9", Path.Level.DFS);
+            System.out.println(p.path);
+//
+//            graphObject.parseGraph("output.dot");
+//            graphObject.outputGraphics("output2.png", "png");
         } catch (IOException e) {
             e.printStackTrace();
         }
