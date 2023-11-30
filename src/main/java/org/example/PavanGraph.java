@@ -1,6 +1,5 @@
 package org.example;
 
-import com.kitfox.svg.A;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.engine.Format;
@@ -20,7 +19,7 @@ import static guru.nidi.graphviz.model.Factory.mutNode;
 public class PavanGraph {
     public PavanGraph() {
 
-        //graph = mutGraph("makeNewGraph").setDirected(true).graphAttrs().add(Color.BLACK);
+        graph = mutGraph("makeNewGraph").setDirected(true).graphAttrs().add(Color.BLACK);
 
     }
 
@@ -34,6 +33,7 @@ public class PavanGraph {
     public static int getNumNodes(MutableGraph graph) {
         return graph.nodes().size();
     }
+
     public static String getNodeLabels() {
         Collection<MutableNode> n = graph.nodes();
         String res = "";
@@ -43,9 +43,11 @@ public class PavanGraph {
         }
         return res;
     }
+
     public static int getNumEdges(MutableGraph graph) {
         return graph.edges().size();
     }
+
     public static String getEdgeDirections(MutableGraph graph) {
         StringBuilder edge_directions = new StringBuilder();
         graph.edges().forEach(edge -> {
@@ -80,12 +82,11 @@ public class PavanGraph {
     public static void addNode(String label) {
 
 
-        if(nodeExists(label)) {
+        if (nodeExists(label)) {
             graph.add(mutNode(label));
             System.out.println("added node" + label);
         }
     }
-
 
 
     public static void addNodes(String[] labels) {
@@ -98,7 +99,11 @@ public class PavanGraph {
         Collection<MutableNode> n = graph.nodes();
         for (MutableNode node : n) {
             Label labl = node.name();
-            if (labl.toString().equals(label)) {
+
+            //refactor 1 using extract variable
+            boolean temp = labl.toString().equals(label);
+            //end of refactor 1
+            if (temp) {
                 return node;
             }
         }
@@ -113,7 +118,6 @@ public class PavanGraph {
     }
 
 
-
     public static void outputDOTGraph(String path) {
         File dotFile = new File(path);
         try {
@@ -121,6 +125,11 @@ public class PavanGraph {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    //refactor 2 using Extract method
+    public static void outputgraphicshelper(Format gf, File outputFile) throws IOException {
+        Graphviz.fromGraph(graph).width(800).render(gf).toFile(outputFile);
     }
 
 
@@ -132,14 +141,14 @@ public class PavanGraph {
 
         File outputFile = new File(path);
         try {
-            Graphviz.fromGraph(graph).width(800).render(graphFormat).toFile(outputFile);
+            outputgraphicshelper(graphFormat, outputFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void removeNode(String label,String filepath)
-    {
+    //
+    public static void removeNode(String label, String filepath) {
         File file = new File(filepath);
         String quotedLabel = "\"" + label + "\"";
         File tempFile = new File("tempFile.dot"); // Temporary file to store modified content
@@ -149,8 +158,7 @@ public class PavanGraph {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                if(!line.contains(quotedLabel))
-                {
+                if (!line.contains(quotedLabel)) {
                     writer.write(line + System.lineSeparator());
                 }
             }
@@ -165,19 +173,23 @@ public class PavanGraph {
 
     }
 
-    public static void removeNodes(String[] labels,String filename)
-    {
+    public static void removeNodes(String[] labels, String filename) {
         for (String label : labels) {
-            removeNode(label,filename);
+            removeNode(label, filename);
         }
 
     }
 
-    public static void removeEdge(String src, String dst,String filename)
-    {
+    //refactoring 3 using Extract Method
+    public static String AddQuotes(String input) {
+        String output = "\"" + input + "\"";
+        return output;
+    }
+
+    public static void removeEdge(String src, String dst, String filename) {
         File file = new File(filename);
-        String quotedsrc = "\"" + src + "\"";
-        String quoteddst = "\"" + dst + "\"";
+        String quotedsrc = AddQuotes(src);
+        String quoteddst = AddQuotes(dst);
         File tempFile = new File("tempFile.dot"); // Temporary file to store modified content
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -185,8 +197,10 @@ public class PavanGraph {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                if(!(line.contains(quotedsrc) && line.contains(quoteddst)))
-                {
+                //refactor 4 using Extract variable
+                boolean checkvalid = !(line.contains(quotedsrc) && line.contains(quoteddst));
+
+                if (checkvalid) {
                     writer.write(line + System.lineSeparator());
                 }
             }
@@ -199,8 +213,13 @@ public class PavanGraph {
             tempFile.renameTo(file);
         }
     }
-    public static class Path{
 
+
+    // refactoring using Template pattern
+
+    public static abstract class Path_Template {
+
+        searchalgo search_obj;
         public static boolean exist;
         public static boolean[] visiteddfs;
         public static ArrayList<Integer> path;
@@ -211,93 +230,235 @@ public class PavanGraph {
         }
 
 
-        public Path(int n) {
+
+
+        public abstract boolean BFSorDFS(String src, String dst, boolean[] visited, ArrayList<Integer> currentpath);
+
+
+        //BFS and DFS implementation using the Strategy pattern design principle
+        interface  searchalgo
+        {
+            public boolean search(String src, String dst, boolean[] visited, ArrayList<Integer> currentpath);
+        }
+
+        public static class bfsStrategy implements searchalgo
+        {
+            public int size = 0;
+
+            public boolean search(String src, String dst, boolean[] visited, ArrayList<Integer> currentpath)
+            {
+
+                if (Integer.parseInt(src) == Integer.parseInt(dst)) {
+                    exist = true;
+                    path = new ArrayList<>();
+                    path.addAll(currentpath);
+                    System.out.println(path);
+                    size = path.size();
+
+
+
+
+                    return true;
+                }
+                visited[Integer.parseInt(src)] = true;
+                MutableNode n1 = getNode(src);
+                List<Link> x = n1.links();
+
+                for (Link l : x) {
+                    LinkTarget t = l.to();
+                    String lb = t.name().toString();
+                    if (!visited[Integer.parseInt(lb)]) {
+                        currentpath.add(Integer.parseInt(lb));
+                        if(size!=0)
+                        {
+                            break;
+                        }
+                        search(lb, dst, visited, currentpath);
+                        currentpath.remove(currentpath.size() - 1);
+                    }
+                }
+                exist = false;
+                visited[Integer.parseInt(src)] = false;
+
+
+
+
+                return false;
+
+            }
+
+        }
+        public static class dfsStrategy implements searchalgo
+        {
+            public static int size =0;
+            public dfsStrategy(int n) {
+                visiteddfs = new boolean[n];
+                path = new ArrayList<>();
+
+            }
+            public boolean search(String src, String dst, boolean[] visited, ArrayList<Integer> currentpath)
+            {
+                visiteddfs[Integer.parseInt(src)] = true;
+
+                if (currentpath.size() == 0) {
+                    currentpath.add(Integer.parseInt(src));
+                }
+
+
+                if (Integer.parseInt(src) == Integer.parseInt(dst)) {
+                    exist = true;
+                    return true;
+                }
+                MutableNode n1 = getNode(src);
+                List<Link> x = n1.links();
+                for (Link l : x) {
+                    LinkTarget t = l.to();
+                    String lb = t.name().toString();
+                    currentpath.add(Integer.parseInt(lb));
+
+                    //refactor 5 using Extract variable
+                    boolean check = !visiteddfs[Integer.parseInt(lb)] && search(lb, dst, visited, currentpath);
+                    if (check) {
+                        path = currentpath;
+                        exist = true;
+                        size = path.size();
+
+                        System.out.println(path);
+                        if(size!=0)
+                        {
+                            break;
+                        }
+                        return true;
+                    }
+
+                    currentpath.remove(currentpath.size() - 1);
+
+                }
+
+                exist = false;
+
+
+                return false;
+
+            }
+
+        }
+
+    }
+
+    //BFS and DFS implementation using the Template pattern design principle
+
+    public static class bfsClass extends Path_Template {
+
+        public bfsClass(int n) {
             visiteddfs = new boolean[n];
             path = new ArrayList<>();
 
         }
 
-        public static void GraphSearch(String src,String dst,Level x)
-        {
-            if(x==Level.BFS)
-            {
-                ArrayList<Integer> temp = new ArrayList<>();
-                temp.add(Integer.parseInt(src));
-                boolean[] visited = new boolean[1000];
+        @Override
+        public boolean BFSorDFS(String src, String dst, boolean[] visited, ArrayList<Integer> currentpath) {
 
-
-                GraphSearchBFS(src,dst,visited,temp);
-            } else if (x==Level.DFS) {
-                ArrayList<Integer> temp = new ArrayList<>();
-                temp.add(Integer.parseInt(src));
-                GraphSearchDFS(src,dst,temp);
-
-            }
-
-        }
-
-        public static void GraphSearchBFS(String src,String dst,boolean[] visited,ArrayList<Integer> currentpath )
-        {
-            if(Integer.parseInt(src) ==Integer.parseInt(dst)){
+            if (Integer.parseInt(src) == Integer.parseInt(dst)) {
                 exist = true;
                 path = new ArrayList<>();
                 path.addAll(currentpath);
+                return true;
             }
-            visited[Integer.parseInt(src)] =true;
+            visited[Integer.parseInt(src)] = true;
             MutableNode n1 = getNode(src);
             List<Link> x = n1.links();
-            for(Link l:x)
-            {
+            for (Link l : x) {
                 LinkTarget t = l.to();
-                String lb= t.name().toString();
-                if(!visited[Integer.parseInt(lb)]){
+                String lb = t.name().toString();
+                if (!visited[Integer.parseInt(lb)]) {
                     currentpath.add(Integer.parseInt(lb));
-                    GraphSearchBFS(lb,dst,visited,currentpath);
-                    currentpath.remove(currentpath.size()-1);
+                    BFSorDFS(lb, dst, visited, currentpath);
+                    currentpath.remove(currentpath.size() - 1);
                 }
             }
             exist = false;
-            visited[Integer.parseInt(src)] =false;
+            visited[Integer.parseInt(src)] = false;
+
+            return false;
         }
 
-        public static boolean GraphSearchDFS(String src,String dst,ArrayList<Integer> currentpath)
-        {
+    }
+
+    public static class dfsClass extends Path_Template {
+
+        public dfsClass(int n) {
+            visiteddfs = new boolean[n];
+            path = new ArrayList<>();
+
+        }
+
+
+        @Override
+        public boolean BFSorDFS(String src, String dst, boolean[] visited, ArrayList<Integer> currentpath) {
             visiteddfs[Integer.parseInt(src)] = true;
 
-            if(currentpath.size()==0)
-            {
+            if (currentpath.size() == 0) {
                 currentpath.add(Integer.parseInt(src));
             }
 
 
-
-            if(Integer.parseInt(src) == Integer.parseInt(dst))
-            {
+            if (Integer.parseInt(src) == Integer.parseInt(dst)) {
                 exist = true;
                 return true;
             }
             MutableNode n1 = getNode(src);
             List<Link> x = n1.links();
-            for(Link l:x)
-            {
+            for (Link l : x) {
                 LinkTarget t = l.to();
-                String lb= t.name().toString();
+                String lb = t.name().toString();
                 currentpath.add(Integer.parseInt(lb));
-                if(!visiteddfs[Integer.parseInt(lb)] && GraphSearchDFS(lb,dst,currentpath))
-                {
+                //refactor 5 using Extract variable
+                boolean check = !visiteddfs[Integer.parseInt(lb)] && BFSorDFS(lb, dst, visited, currentpath);
+                if (check) {
                     path = currentpath;
                     exist = true;
                     return true;
                 }
-                currentpath.remove(currentpath.size()-1);
+                currentpath.remove(currentpath.size() - 1);
             }
             exist = false;
             return false;
+
+
         }
+
     }
 
 
 
+    public static Path_Template helper(int n, Path_Template.Level l)
+    {
+        Path_Template p;
+        if(l == Path_Template.Level.DFS)
+        {
+            p = new dfsClass(n);
+
+        }
+        else {
+            p = new bfsClass(n);
+        }
+
+        return p;
+    }
+
+    public static Path_Template.searchalgo helper_strat(int n , Path_Template.Level l)
+    {
+        PavanGraph.Path_Template.searchalgo obj;
+        if(l == Path_Template.Level.DFS)
+        {
+            obj = new Path_Template.dfsStrategy(n);
+        }
+        else{
+            obj = new Path_Template.bfsStrategy();
+        }
+        return obj;
+    }
 
 
     public static void main(String[] args) {
@@ -320,7 +481,7 @@ public class PavanGraph {
 //            graphObject.addEdge("13", "10");
 //            graphObject.addEdge("14", "10");
 
-            graphObject.removeNodes(set_of_labels,"output.dot");
+
 
 
 
@@ -329,21 +490,25 @@ public class PavanGraph {
             graphObject.outputGraphics("output2.png", "png");
 
             int n = graphObject.graph.nodes().size();
-            boolean[] visited = new boolean[n];
-            String[] adj = new String[n];
+//            Path_Template p = helper(n,Path_Template.Level.DFS);
+           boolean[] visited = new boolean[1000];
+            ArrayList<Integer> temp = new ArrayList<>();
+            temp.add(Integer.parseInt("0"));
+//            p.BFSorDFS("0","9",visited,temp);
 
-            for (int i = 0; i < visited.length; i++) {
-                visited[i] = false;
-            }
-            Queue<String> q = new ArrayDeque<>();
-            Path p = new Path(n);
-//
-            p.GraphSearch("8","9", Path.Level.BFS);
+            PavanGraph.Path_Template.searchalgo obj = helper_strat(n,Path_Template.Level.DFS);
+            boolean b = obj.search("0","9",visited,temp);
 
-            graphObject.parseGraph("output.dot");
-            graphObject.outputGraphics("output2.png", "png");
+
+
+
+//            graphObject.parseGraph("output.dot");
+//            graphObject.outputGraphics("output2.png", "png");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 }
+
+
+
