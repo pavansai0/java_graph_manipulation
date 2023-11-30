@@ -218,6 +218,8 @@ public class PavanGraph {
     // refactoring using Template pattern
 
     public static abstract class Path_Template {
+
+        searchalgo search_obj;
         public static boolean exist;
         public static boolean[] visiteddfs;
         public static ArrayList<Integer> path;
@@ -227,9 +229,124 @@ public class PavanGraph {
             BFS
         }
 
+
+
+
         public abstract boolean BFSorDFS(String src, String dst, boolean[] visited, ArrayList<Integer> currentpath);
 
+
+        //BFS and DFS implementation using the Strategy pattern design principle
+        interface  searchalgo
+        {
+            public boolean search(String src, String dst, boolean[] visited, ArrayList<Integer> currentpath);
+        }
+
+        public static class bfsStrategy implements searchalgo
+        {
+            public int size = 0;
+
+            public boolean search(String src, String dst, boolean[] visited, ArrayList<Integer> currentpath)
+            {
+
+                if (Integer.parseInt(src) == Integer.parseInt(dst)) {
+                    exist = true;
+                    path = new ArrayList<>();
+                    path.addAll(currentpath);
+                    System.out.println(path);
+                    size = path.size();
+
+
+
+
+                    return true;
+                }
+                visited[Integer.parseInt(src)] = true;
+                MutableNode n1 = getNode(src);
+                List<Link> x = n1.links();
+
+                for (Link l : x) {
+                    LinkTarget t = l.to();
+                    String lb = t.name().toString();
+                    if (!visited[Integer.parseInt(lb)]) {
+                        currentpath.add(Integer.parseInt(lb));
+                        if(size!=0)
+                        {
+                            break;
+                        }
+                        search(lb, dst, visited, currentpath);
+                        currentpath.remove(currentpath.size() - 1);
+                    }
+                }
+                exist = false;
+                visited[Integer.parseInt(src)] = false;
+
+
+
+
+                return false;
+
+            }
+
+        }
+        public static class dfsStrategy implements searchalgo
+        {
+            public static int size =0;
+            public dfsStrategy(int n) {
+                visiteddfs = new boolean[n];
+                path = new ArrayList<>();
+
+            }
+            public boolean search(String src, String dst, boolean[] visited, ArrayList<Integer> currentpath)
+            {
+                visiteddfs[Integer.parseInt(src)] = true;
+
+                if (currentpath.size() == 0) {
+                    currentpath.add(Integer.parseInt(src));
+                }
+
+
+                if (Integer.parseInt(src) == Integer.parseInt(dst)) {
+                    exist = true;
+                    return true;
+                }
+                MutableNode n1 = getNode(src);
+                List<Link> x = n1.links();
+                for (Link l : x) {
+                    LinkTarget t = l.to();
+                    String lb = t.name().toString();
+                    currentpath.add(Integer.parseInt(lb));
+
+                    //refactor 5 using Extract variable
+                    boolean check = !visiteddfs[Integer.parseInt(lb)] && search(lb, dst, visited, currentpath);
+                    if (check) {
+                        path = currentpath;
+                        exist = true;
+                        size = path.size();
+
+                        System.out.println(path);
+                        if(size!=0)
+                        {
+                            break;
+                        }
+                        return true;
+                    }
+
+                    currentpath.remove(currentpath.size() - 1);
+
+                }
+
+                exist = false;
+
+
+                return false;
+
+            }
+
+        }
+
     }
+
+    //BFS and DFS implementation using the Template pattern design principle
 
     public static class bfsClass extends Path_Template {
 
@@ -312,6 +429,9 @@ public class PavanGraph {
         }
 
     }
+
+
+
     public static Path_Template helper(int n, Path_Template.Level l)
     {
         Path_Template p;
@@ -326,6 +446,21 @@ public class PavanGraph {
 
         return p;
     }
+
+    public static Path_Template.searchalgo helper_strat(int n , Path_Template.Level l)
+    {
+        PavanGraph.Path_Template.searchalgo obj;
+        if(l == Path_Template.Level.DFS)
+        {
+            obj = new Path_Template.dfsStrategy(n);
+        }
+        else{
+            obj = new Path_Template.bfsStrategy();
+        }
+        return obj;
+    }
+
+
     public static void main(String[] args) {
         PavanGraph graphObject = new PavanGraph();
         try {
@@ -355,13 +490,16 @@ public class PavanGraph {
             graphObject.outputGraphics("output2.png", "png");
 
             int n = graphObject.graph.nodes().size();
-            Path_Template p = helper(n,Path_Template.Level.DFS);
-            boolean[] visited = new boolean[1000];
+//            Path_Template p = helper(n,Path_Template.Level.DFS);
+           boolean[] visited = new boolean[1000];
             ArrayList<Integer> temp = new ArrayList<>();
             temp.add(Integer.parseInt("0"));
-            p.BFSorDFS("0","9",visited,temp);
-            System.out.println(p.exist);
-            System.out.println(p.path);
+//            p.BFSorDFS("0","9",visited,temp);
+
+            PavanGraph.Path_Template.searchalgo obj = helper_strat(n,Path_Template.Level.DFS);
+            boolean b = obj.search("0","9",visited,temp);
+
+
 
 
 //            graphObject.parseGraph("output.dot");

@@ -198,9 +198,12 @@ public class PavanGraphTest {
 
         PavanGraph.parseGraph("test.dot");
         int n = PavanGraph.graph.nodes().size();
-        PavanGraph.Path p = new PavanGraph.Path(n);
+        boolean[] visited = new boolean[1000];
+        ArrayList<Integer> temp = new ArrayList<>();
+        temp.add(Integer.parseInt("0"));
+        PavanGraph.Path_Template p = PavanGraph.helper(n,PavanGraph.Path_Template.Level.DFS);
         ArrayList<Integer> expected = new ArrayList<>(Arrays.asList(0, 3, 5, 6));
-        p.GraphSearch("0","6", PavanGraph.Path.Level.DFS);
+        p.BFSorDFS("0","6",visited,temp);
         assertEquals(p.path, expected);
     }
 
@@ -208,10 +211,13 @@ public class PavanGraphTest {
     public void testHasPathDFS_PathDoesNotExist() throws IOException {
         PavanGraph.parseGraph("test.dot");
         int n = PavanGraph.graph.nodes().size();
-        PavanGraph.Path p = new PavanGraph.Path(n);
+        PavanGraph.Path_Template p = PavanGraph.helper(n,PavanGraph.Path_Template.Level.DFS);
+        boolean[] visited = new boolean[1000];
+        ArrayList<Integer> temp = new ArrayList<>();
+        temp.add(Integer.parseInt("1"));
 
         ArrayList<Integer> expected = new ArrayList<>(Arrays.asList(0, 4, 5, 6));
-        p.GraphSearch("1","3",PavanGraph.Path.Level.DFS);
+        p.BFSorDFS("1","3",visited,temp);
         assertFalse(p.exist); // Path should be empty
     }
 
@@ -221,8 +227,11 @@ public class PavanGraphTest {
 
         PavanGraph.parseGraph("test.dot");
         int n = PavanGraph.graph.nodes().size();
-        PavanGraph.Path p = new PavanGraph.Path(n);
-        p.GraphSearch("0", "0",PavanGraph.Path.Level.DFS);
+        boolean[] visited = new boolean[1000];
+        ArrayList<Integer> temp = new ArrayList<>();
+        temp.add(Integer.parseInt("0"));
+        PavanGraph.Path_Template p = PavanGraph.helper(n,PavanGraph.Path_Template.Level.DFS);
+        p.BFSorDFS("0", "0",visited,temp);
 
         assertTrue(p.exist);
         System.out.println(p.path);
@@ -230,33 +239,41 @@ public class PavanGraphTest {
     }
 
     @Test
-    public void testGraphSearch_PathExists() throws IOException {
+    public void testGraphSearchBFS_PathExists() throws IOException {
         PavanGraph.parseGraph("test.dot");
         int n = PavanGraph.graph.nodes().size();
-        PavanGraph.Path p = new PavanGraph.Path(n);
+        boolean[] visited = new boolean[1000];
+        ArrayList<Integer> temp = new ArrayList<>();
+        temp.add(Integer.parseInt("0"));
+        PavanGraph.Path_Template p = PavanGraph.helper(n,PavanGraph.Path_Template.Level.BFS);
 
-        p.GraphSearch("0", "6",PavanGraph.Path.Level.BFS);
-        System.out.println(p.path.size());
+        p.BFSorDFS("0", "6",visited,temp);
         assertEquals(3, p.path.size());
     }
 
     @Test
-    public void testGraphSearch_PathDoesNotExist() throws IOException {
+    public void testGraphSearchBFS_PathDoesNotExist() throws IOException {
         PavanGraph.parseGraph("test.dot");
         int n = PavanGraph.graph.nodes().size();
-        PavanGraph.Path p = new PavanGraph.Path(n);
-        p.GraphSearch("2", "5",PavanGraph.Path.Level.BFS);
+        PavanGraph.Path_Template p = PavanGraph.helper(n,PavanGraph.Path_Template.Level.BFS);
+        boolean[] visited = new boolean[1000];
+        ArrayList<Integer> temp = new ArrayList<>();
+        temp.add(Integer.parseInt("2"));
+        p.BFSorDFS("2", "5",visited,temp);
         assertEquals(0, p.path.size());
     }
 
 
 
     @Test
-    public void testGraphSearch_SameSourceAndDestination() throws IOException {
+    public void testGraphSearchBFS_SameSourceAndDestination() throws IOException {
         PavanGraph.parseGraph("test.dot");
         int n = PavanGraph.graph.nodes().size();
-        PavanGraph.Path p = new PavanGraph.Path(n);
-        p.GraphSearch("0", "0",PavanGraph.Path.Level.BFS);
+        PavanGraph.Path_Template p = PavanGraph.helper(n,PavanGraph.Path_Template.Level.BFS);
+        boolean[] visited = new boolean[1000];
+        ArrayList<Integer> temp = new ArrayList<>();
+        temp.add(Integer.parseInt("0"));
+        p.BFSorDFS("0", "0",visited,temp);
         assertEquals(1, p.path.size());
     }
 
