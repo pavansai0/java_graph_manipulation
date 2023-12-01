@@ -201,7 +201,7 @@ public class PavanGraphTest {
         boolean[] visited = new boolean[1000];
         ArrayList<Integer> temp = new ArrayList<>();
         temp.add(Integer.parseInt("0"));
-        PavanGraph.Path_Template p = PavanGraph.helper(n,PavanGraph.Path_Template.Level.DFS);
+        PavanGraph.Path_Template p = PavanGraph.helper(n,"0",PavanGraph.Path_Template.Level.DFS);
         ArrayList<Integer> expected = new ArrayList<>(Arrays.asList(0, 3, 5, 6));
         p.BFSorDFS("0","6",visited,temp);
         assertEquals(p.path, expected);
@@ -211,7 +211,7 @@ public class PavanGraphTest {
     public void testHasPathDFS_PathDoesNotExist() throws IOException {
         PavanGraph.parseGraph("test.dot");
         int n = PavanGraph.graph.nodes().size();
-        PavanGraph.Path_Template p = PavanGraph.helper(n,PavanGraph.Path_Template.Level.DFS);
+        PavanGraph.Path_Template p = PavanGraph.helper(n,"1",PavanGraph.Path_Template.Level.DFS);
         boolean[] visited = new boolean[1000];
         ArrayList<Integer> temp = new ArrayList<>();
         temp.add(Integer.parseInt("1"));
@@ -230,7 +230,7 @@ public class PavanGraphTest {
         boolean[] visited = new boolean[1000];
         ArrayList<Integer> temp = new ArrayList<>();
         temp.add(Integer.parseInt("0"));
-        PavanGraph.Path_Template p = PavanGraph.helper(n,PavanGraph.Path_Template.Level.DFS);
+        PavanGraph.Path_Template p = PavanGraph.helper(n,"0",PavanGraph.Path_Template.Level.DFS);
         p.BFSorDFS("0", "0",visited,temp);
 
         assertTrue(p.exist);
@@ -245,7 +245,7 @@ public class PavanGraphTest {
         boolean[] visited = new boolean[1000];
         ArrayList<Integer> temp = new ArrayList<>();
         temp.add(Integer.parseInt("0"));
-        PavanGraph.Path_Template p = PavanGraph.helper(n,PavanGraph.Path_Template.Level.BFS);
+        PavanGraph.Path_Template p = PavanGraph.helper(n,"0",PavanGraph.Path_Template.Level.BFS);
 
         p.BFSorDFS("0", "6",visited,temp);
         assertEquals(3, p.path.size());
@@ -255,7 +255,7 @@ public class PavanGraphTest {
     public void testGraphSearchBFS_PathDoesNotExist() throws IOException {
         PavanGraph.parseGraph("test.dot");
         int n = PavanGraph.graph.nodes().size();
-        PavanGraph.Path_Template p = PavanGraph.helper(n,PavanGraph.Path_Template.Level.BFS);
+        PavanGraph.Path_Template p = PavanGraph.helper(n,"2",PavanGraph.Path_Template.Level.BFS);
         boolean[] visited = new boolean[1000];
         ArrayList<Integer> temp = new ArrayList<>();
         temp.add(Integer.parseInt("2"));
@@ -269,7 +269,7 @@ public class PavanGraphTest {
     public void testGraphSearchBFS_SameSourceAndDestination() throws IOException {
         PavanGraph.parseGraph("test.dot");
         int n = PavanGraph.graph.nodes().size();
-        PavanGraph.Path_Template p = PavanGraph.helper(n,PavanGraph.Path_Template.Level.BFS);
+        PavanGraph.Path_Template p = PavanGraph.helper(n,"0",PavanGraph.Path_Template.Level.BFS);
         boolean[] visited = new boolean[1000];
         ArrayList<Integer> temp = new ArrayList<>();
         temp.add(Integer.parseInt("0"));
