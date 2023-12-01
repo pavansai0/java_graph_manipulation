@@ -245,6 +245,14 @@ public class PavanGraph {
         public static class bfsStrategy implements searchalgo
         {
             public int size = 0;
+            public String source;
+
+            public bfsStrategy(int n,String src) {
+                visiteddfs = new boolean[n];
+                path = new ArrayList<>();
+                source = src;
+
+            }
 
             public boolean search(String src, String dst, boolean[] visited, ArrayList<Integer> currentpath)
             {
@@ -264,6 +272,9 @@ public class PavanGraph {
                 visited[Integer.parseInt(src)] = true;
                 MutableNode n1 = getNode(src);
                 List<Link> x = n1.links();
+
+                if(src == source)
+                    currentpath.add(Integer.parseInt(src));
 
                 for (Link l : x) {
                     LinkTarget t = l.to();
@@ -401,7 +412,7 @@ public class PavanGraph {
 
                     if(final_path.contains(lb)){
                         final_path = new ArrayList<String>();
-                        System.out.println("Cycle found, rejecting existing path");
+                        System.out.println("Rejecting the above path");
                         lb = source;
                     }
 
@@ -442,39 +453,42 @@ public class PavanGraph {
 
     //BFS and DFS implementation using the Template pattern design principle
 
-    public static class bfsClass extends Path_Template {
+    public static class bfsClass extends PavanGraph.Path_Template {
 
-        public bfsClass(int n) {
+        public String source;
+
+        public bfsClass(int n,String src) {
             visiteddfs = new boolean[n];
             path = new ArrayList<>();
+            source = src;
 
         }
 
         @Override
         public boolean BFSorDFS(String src, String dst, boolean[] visited, ArrayList<Integer> currentpath) {
 
-            if (Integer.parseInt(src) == Integer.parseInt(dst)) {
+            if(Integer.parseInt(src) ==Integer.parseInt(dst)){
                 exist = true;
                 path = new ArrayList<>();
                 path.addAll(currentpath);
-                return true;
             }
-            visited[Integer.parseInt(src)] = true;
+            visited[Integer.parseInt(src)] =true;
             MutableNode n1 = getNode(src);
             List<Link> x = n1.links();
-            for (Link l : x) {
+            if(src == source)
+                currentpath.add(Integer.parseInt(src));
+            for(Link l:x)
+            {
                 LinkTarget t = l.to();
-                String lb = t.name().toString();
-                if (!visited[Integer.parseInt(lb)]) {
+                String lb= t.name().toString();
+                if(!visited[Integer.parseInt(lb)]){
                     currentpath.add(Integer.parseInt(lb));
-                    BFSorDFS(lb, dst, visited, currentpath);
-                    currentpath.remove(currentpath.size() - 1);
+                    BFSorDFS(lb,dst,visited,currentpath);
+                    currentpath.remove(currentpath.size()-1);
                 }
             }
-            exist = false;
-            visited[Integer.parseInt(src)] = false;
-
-            return false;
+            visited[Integer.parseInt(src)] =false;
+            return exist;
         }
 
     }
@@ -581,7 +595,7 @@ public class PavanGraph {
 
                 if(final_path.contains(lb)){
                     final_path = new ArrayList<String>();
-                    System.out.println("Cycle found, rejecting existing path");
+                    System.out.println("Rejecting the above path");
                     lb = source;
                 }
 
@@ -628,7 +642,7 @@ public class PavanGraph {
 
         }
         else if(l == PavanGraph.Path_Template.Level.BFS){
-            p = new bfsClass(n);
+            p = new bfsClass(n,src);
         }
         else{
             p = new randomWalkClass(n, src);
@@ -645,7 +659,7 @@ public class PavanGraph {
             obj = new Path_Template.dfsStrategy(n);
         }
         else if(l == Path_Template.Level.BFS){
-            obj = new Path_Template.bfsStrategy();
+            obj = new Path_Template.bfsStrategy(n,src);
         }
         else{
             obj = new Path_Template.randomWalkStrategy(n,src);
@@ -657,53 +671,87 @@ public class PavanGraph {
     public static void main(String[] args) {
         PavanGraph graphObject = new PavanGraph();
         try {
-            String filename = "input_canvas.dot";
-
-            String[] set_of_labels = new String[] {"2", "3"};
+            //parsing a dot graph file
+            String filename = "test.dot";
             graphObject.parseGraph(filename);
 //
-//            graphObject.addNode("11");
-//            graphObject.addNodes(set_of_labels);
+//            //adding nodes to the graph
+//            String[] set_of_labels = new String[] {"6", "3"};
+//            graphObject.addNode("11");          //adds single node
+//            graphObject.addNodes(set_of_labels);    //adds multiple nodes
 //
-//            graphObject.addEdge("6", "11");
-//            graphObject.addEdge("5", "11");
-//            graphObject.addEdge("11", "12");
-//            graphObject.addEdge("7", "11");
-//            graphObject.addEdge("9", "13");
-//            graphObject.addEdge("9", "14");
-//            graphObject.addEdge("13", "10");
-//            graphObject.addEdge("14", "10");
+//            //removing a node
+//            graphObject.removeNode("11", "test.dot");
+//
+//            //add edges to the graph
+//            graphObject.addEdge("6", "4");
+//
+//            //removing an edge
+//            graphObject.removeEdge("6", "4", "test.dot");
+//            graphObject.parseGraph(filename);
 
-
-
-
-
-
+            //output graph to a dot file and png file
             graphObject.outputDOTGraph("output.dot");
-            graphObject.outputGraphics("output2.png", "png");
-
-            int n = graphObject.graph.nodes().size();
+            graphObject.outputGraphics("output.png", "png");
 
 
-//            // strategy pattern implementation
-           boolean[] visited = new boolean[1000];
-            ArrayList<Integer> temp = new ArrayList<>();
-//            temp.add(Integer.parseInt("a"));
-            PavanGraph.Path_Template.searchalgo obj = helper_strat(n,"a",Path_Template.Level.RWS);
-            boolean b = obj.search("a","c",visited,temp);
+            //BFS template
+//            int n = graphObject.graph.nodes().size();
+//            PavanGraph.Path_Template p = helper(n, "0", PavanGraph.Path_Template.Level.BFS);
+//            boolean[] visited = new boolean[1000];
+//            ArrayList<Integer> temp = new ArrayList<>();
+//
+//            p.BFSorDFS("0","3",visited,temp);
+//            System.out.println(p.exist);
+//            System.out.println(p.path);
 
 
+//            //DFS template
+//            int n = graphObject.graph.nodes().size();
+//            PavanGraph.Path_Template p = helper(n, "0", PavanGraph.Path_Template.Level.DFS);
+//            boolean[] visited = new boolean[1000];
+//            ArrayList<Integer> temp = new ArrayList<>();
+//
+//            p.BFSorDFS("0","6",visited,temp);
+//            System.out.println(p.exist);
+//            System.out.println(p.path);
+//
+//
+//            //BFS strategy
+//            int n = graphObject.graph.nodes().size();
+//            boolean[] visited = new boolean[1000];
+//            ArrayList<Integer> temp = new ArrayList<>();
+//            PavanGraph.Path_Template.searchalgo Obj = helper_strat(n, "0", PavanGraph.Path_Template.Level.BFS);
+//            boolean b = Obj.search("2","3",visited,temp);
+            
 
-//            Path_Template p = helper(n,"a",Path_Template.Level.RWS);
-//            p.BFSorDFS("a","h",visited,temp);
+
+            //DFS strategy
+//            int n = graphObject.graph.nodes().size();
+//            boolean[] visited = new boolean[1000];
+//            ArrayList<Integer> temp = new ArrayList<>();
+//            PavanGraph.Path_Template.searchalgo Obj = helper_strat(n, "0", PavanGraph.Path_Template.Level.DFS);
+//            boolean b = Obj.search("0","9",visited,temp);
 
 
+            //RWS template
+//            String filename2 = "input_canvas.dot";
+//            graphObject.parseGraph(filename2);
+//            int n = graphObject.graph.nodes().size();
+//            PavanGraph.Path_Template p = helper(n, "a", PavanGraph.Path_Template.Level.RWS);
+//            boolean[] visited = new boolean[1000];
+//            ArrayList<Integer> temp = new ArrayList<>();
+//            p.BFSorDFS("a","c",visited,temp);
 
 
-
-
-//            graphObject.parseGraph("output.dot");
-//            graphObject.outputGraphics("output2.png", "png");
+//            //RWS strategy
+//            String filename2 = "input_canvas.dot";
+//            graphObject.parseGraph(filename2);
+//            int n = graphObject.graph.nodes().size();
+//            boolean[] visited = new boolean[1000];
+//            ArrayList<Integer> temp = new ArrayList<>();
+//            PavanGraph.Path_Template.searchalgo Obj = helper_strat(n, "a", PavanGraph.Path_Template.Level.RWS);
+//            boolean b = Obj.search("a","c",visited,temp);
         } catch (IOException e) {
             e.printStackTrace();
         }
