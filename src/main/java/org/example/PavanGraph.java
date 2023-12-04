@@ -218,8 +218,6 @@ public class PavanGraph {
     // refactoring using Template pattern
 
     public static abstract class Path_Template {
-
-        searchalgo search_obj;
         public static boolean exist;
         public static boolean[] visiteddfs;
         public static ArrayList<Integer> path;
@@ -240,6 +238,29 @@ public class PavanGraph {
         interface  searchalgo
         {
             public boolean search(String src, String dst, boolean[] visited, ArrayList<Integer> currentpath);
+        }
+
+        public static class contextclass {
+
+            public searchalgo obj1;
+
+            public contextclass(int n,String src,Level l)
+            {
+                PavanGraph.Path_Template.searchalgo obj;
+                if(l == Path_Template.Level.DFS)
+                {
+                    obj = new Path_Template.dfsStrategy(n);
+                }
+                else if(l == Path_Template.Level.BFS){
+                    obj = new Path_Template.bfsStrategy(n,src);
+                }
+                else{
+                    obj = new Path_Template.randomWalkStrategy(n,src);
+                }
+                obj1 = obj;
+
+            }
+
         }
 
         public static class bfsStrategy implements searchalgo
@@ -278,14 +299,14 @@ public class PavanGraph {
 
                 for (Link l : x) {
                     LinkTarget t = l.to();
-                    String lb = t.name().toString();
-                    if (!visited[Integer.parseInt(lb)]) {
-                        currentpath.add(Integer.parseInt(lb));
+                    String label_nextnode = t.name().toString();
+                    if (!visited[Integer.parseInt(label_nextnode)]) {
+                        currentpath.add(Integer.parseInt(label_nextnode));
                         if(size!=0)
                         {
                             break;
                         }
-                        search(lb, dst, visited, currentpath);
+                        search(label_nextnode, dst, visited, currentpath);
                         currentpath.remove(currentpath.size() - 1);
                     }
                 }
@@ -325,11 +346,11 @@ public class PavanGraph {
                 List<Link> x = n1.links();
                 for (Link l : x) {
                     LinkTarget t = l.to();
-                    String lb = t.name().toString();
-                    currentpath.add(Integer.parseInt(lb));
+                    String label_nextnode = t.name().toString();
+                    currentpath.add(Integer.parseInt(label_nextnode));
 
                     //refactor 5 using Extract variable
-                    boolean check = !visiteddfs[Integer.parseInt(lb)] && search(lb, dst, visited, currentpath);
+                    boolean check = !visiteddfs[Integer.parseInt(label_nextnode)] && search(label_nextnode, dst, visited, currentpath);
                     if (check) {
                         path = currentpath;
                         exist = true;
@@ -386,7 +407,7 @@ public class PavanGraph {
                     List<Link> neighbours = source_node.links();
                     Random random = new Random();
                     int n = neighbours.size();
-                    int random_value = -1;
+                    int random_value;
                     
                     if(n>0){
                         random_value = random.nextInt(n);
@@ -394,14 +415,14 @@ public class PavanGraph {
                     else break;
                     Link new_node = neighbours.get(random_value);
                     LinkTarget t = new_node.to();
-                    String lb= t.name().toString();
+                    String label_nextnode= t.name().toString();
 
-                    if(path_store.contains(lb)){
+                    if(path_store.contains(label_nextnode)){
                         path_store = new ArrayList<String>();
                         System.out.println("Rejecting the above path");
-                        lb = source;
+                        label_nextnode = source;
                     }
-                    path_store.add(lb);
+                    path_store.add(label_nextnode);
                     String temp_2 = "";
                     for(int i = 0; i < path_store.size(); i++){
                         String temp = "";
@@ -418,7 +439,7 @@ public class PavanGraph {
                         break;
                     }
                     else
-                        search(lb,dst, visited, currentpath);
+                        search(label_nextnode,dst, visited, currentpath);
 
                 }
                 return exist;
@@ -458,10 +479,10 @@ public class PavanGraph {
             for(Link l:x)
             {
                 LinkTarget t = l.to();
-                String lb= t.name().toString();
-                if(!visited[Integer.parseInt(lb)]){
-                    currentpath.add(Integer.parseInt(lb));
-                    BFSorDFS(lb,dst,visited,currentpath);
+                String label_nextnode= t.name().toString();
+                if(!visited[Integer.parseInt(label_nextnode)]){
+                    currentpath.add(Integer.parseInt(label_nextnode));
+                    BFSorDFS(label_nextnode,dst,visited,currentpath);
                     currentpath.remove(currentpath.size()-1);
                 }
             }
@@ -497,10 +518,10 @@ public class PavanGraph {
             List<Link> x = n1.links();
             for (Link l : x) {
                 LinkTarget t = l.to();
-                String lb = t.name().toString();
-                currentpath.add(Integer.parseInt(lb));
+                String label_nextnode = t.name().toString();
+                currentpath.add(Integer.parseInt(label_nextnode));
                 //refactor 5 using Extract variable
-                boolean check = !visiteddfs[Integer.parseInt(lb)] && BFSorDFS(lb, dst, visited, currentpath);
+                boolean check = !visiteddfs[Integer.parseInt(label_nextnode)] && BFSorDFS(label_nextnode, dst, visited, currentpath);
                 if (check) {
                     path = currentpath;
                     exist = true;
@@ -546,21 +567,21 @@ public class PavanGraph {
                 List<Link> neighbours = source_node.links();
                 Random random = new Random();
                 int n = neighbours.size();
-                int random_value = -1;
+                int random_value;
                 if(n>0){
                     random_value = random.nextInt(n);
                 }
                 else break;
                 Link new_node = neighbours.get(random_value);
                 LinkTarget t = new_node.to();
-                String lb= t.name().toString();
+                String label_nextnode= t.name().toString();
 
-                if(path_store.contains(lb)){
+                if(path_store.contains(label_nextnode)){
                     path_store = new ArrayList<String>();
                     System.out.println("Rejecting the above path");
-                    lb = source;
+                    label_nextnode = source;
                 }
-                path_store.add(lb);
+                path_store.add(label_nextnode);
 
                 String temp_2 = "";
                 for(int i = 0; i < path_store.size(); i++){
@@ -578,7 +599,7 @@ public class PavanGraph {
                     break;
                 }
                 else
-                    BFSorDFS(lb,dst, visited, currentpath);
+                    BFSorDFS(label_nextnode,dst, visited, currentpath);
             }
             return exist;
         }
@@ -650,11 +671,11 @@ public class PavanGraph {
 
             //BFS template pattern
 //            int n = graphObject.graph.nodes().size();
-//            PavanGraph.Path_Template p = helper(n, "0", PavanGraph.Path_Template.Level.BFS);
+//            PavanGraph.Path_Template p = helper(n, "2", PavanGraph.Path_Template.Level.BFS);
 //            boolean[] visited = new boolean[1000];
 //            ArrayList<Integer> temp = new ArrayList<>();
 //
-//            p.BFSorDFS("0","3",visited,temp);
+//            p.BFSorDFS("2","3",visited,temp);
 //            System.out.println(p.exist);
 //            System.out.println(p.path);
 
@@ -665,7 +686,7 @@ public class PavanGraph {
 //            boolean[] visited = new boolean[1000];
 //            ArrayList<Integer> temp = new ArrayList<>();
 //
-//            p.BFSorDFS("0","6",visited,temp);
+//            p.BFSorDFS("0","7",visited,temp);
 //            System.out.println(p.exist);
 //            System.out.println(p.path);
 //
@@ -674,8 +695,8 @@ public class PavanGraph {
 //            int n = graphObject.graph.nodes().size();
 //            boolean[] visited = new boolean[1000];
 //            ArrayList<Integer> temp = new ArrayList<>();
-//            PavanGraph.Path_Template.searchalgo Obj = helper_strat(n, "0", PavanGraph.Path_Template.Level.BFS);
-//            boolean b = Obj.search("2","3",visited,temp);
+//            PavanGraph.Path_Template.contextclass cont = new Path_Template.contextclass(n, "0", PavanGraph.Path_Template.Level.BFS);
+//            boolean b = cont.obj1.search("0","7",visited,temp);
             
 
 
@@ -683,8 +704,8 @@ public class PavanGraph {
 //            int n = graphObject.graph.nodes().size();
 //            boolean[] visited = new boolean[1000];
 //            ArrayList<Integer> temp = new ArrayList<>();
-//            PavanGraph.Path_Template.searchalgo Obj = helper_strat(n, "0", PavanGraph.Path_Template.Level.DFS);
-//            boolean b = Obj.search("0","9",visited,temp);
+//            PavanGraph.Path_Template.contextclass cont = new Path_Template.contextclass(n, "0", PavanGraph.Path_Template.Level.DFS);
+//            boolean b = cont.obj1.search("0","7",visited,temp);
 
 
             //RWS template pattern
@@ -703,8 +724,8 @@ public class PavanGraph {
             int n = graphObject.graph.nodes().size();
             boolean[] visited = new boolean[1000];
             ArrayList<Integer> temp = new ArrayList<>();
-            PavanGraph.Path_Template.searchalgo Obj = helper_strat(n, "a", PavanGraph.Path_Template.Level.RWS);
-            boolean b = Obj.search("a","c",visited,temp);
+            PavanGraph.Path_Template.contextclass cont = new Path_Template.contextclass(n, "0", PavanGraph.Path_Template.Level.RWS);
+            boolean b = cont.obj1.search("a","c",visited,temp);
         } catch (IOException e) {
             e.printStackTrace();
         }
