@@ -671,16 +671,16 @@ public class PavanGraph {
 
             //BFS template pattern
 //            int n = graphObject.graph.nodes().size();
-//            PavanGraph.Path_Template p = helper(n, "2", PavanGraph.Path_Template.Level.BFS);
+//            PavanGraph.Path_Template p = helper(n, "0", PavanGraph.Path_Template.Level.BFS);
 //            boolean[] visited = new boolean[1000];
 //            ArrayList<Integer> temp = new ArrayList<>();
 //
-//            p.BFSorDFS("2","3",visited,temp);
+//            p.BFSorDFS("0","7",visited,temp);
 //            System.out.println(p.exist);
 //            System.out.println(p.path);
 
 
-//            //DFS template pattern
+////            //DFS template pattern
 //            int n = graphObject.graph.nodes().size();
 //            PavanGraph.Path_Template p = helper(n, "0", PavanGraph.Path_Template.Level.DFS);
 //            boolean[] visited = new boolean[1000];
@@ -708,7 +708,7 @@ public class PavanGraph {
 //            boolean b = cont.obj1.search("0","7",visited,temp);
 
 
-            //RWS template pattern
+//            //RWS template pattern
 //            String filename2 = "input_canvas.dot";
 //            graphObject.parseGraph(filename2);
 //            int n = graphObject.graph.nodes().size();
@@ -724,7 +724,7 @@ public class PavanGraph {
             int n = graphObject.graph.nodes().size();
             boolean[] visited = new boolean[1000];
             ArrayList<Integer> temp = new ArrayList<>();
-            PavanGraph.Path_Template.contextclass cont = new Path_Template.contextclass(n, "0", PavanGraph.Path_Template.Level.RWS);
+            PavanGraph.Path_Template.contextclass cont = new Path_Template.contextclass(n, "a", PavanGraph.Path_Template.Level.RWS);
             boolean b = cont.obj1.search("a","c",visited,temp);
         } catch (IOException e) {
             e.printStackTrace();
